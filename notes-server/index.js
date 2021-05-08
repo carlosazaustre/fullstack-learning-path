@@ -27,11 +27,20 @@ const generateId = () => {
   return maxId + 1;
 };
 
+const requestLogger = (req, res, next) => {
+  console.log("Method: ", req?.method);
+  console.log("Path: ", req?.path);
+  console.log("Body: ", req?.body);
+  console.log("----");
+  next();
+};
+
 const PORT = 3001;
 const app = express();
 const server = http.createServer(app);
 
 app.use(express.json());
+app.use(requestLogger);
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello World!</h1>");
@@ -79,6 +88,12 @@ app.delete("/api/notes/:id", (req, res) => {
 
   res.status(204).end();
 });
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

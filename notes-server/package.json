@@ -1,10 +1,14 @@
 {
-  "name": "backend",
+  "name": "notes-server",
   "version": "0.1.0",
   "description": "REST API Backend for notes-web ",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "rm -rf build && cd ../notes-web && npm run build --prod && cp -r build ../notes-server/",
+    "deploy": "git push -u heroku main",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
+    "logs:prod": "heroku logs --tail",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },

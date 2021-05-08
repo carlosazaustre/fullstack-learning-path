@@ -1,5 +1,6 @@
 const http = require("http");
 const express = require("express");
+const cors = require("cors");
 
 let notes = [
   {
@@ -35,10 +36,11 @@ const requestLogger = (req, res, next) => {
   next();
 };
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const app = express();
 const server = http.createServer(app);
 
+app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
 

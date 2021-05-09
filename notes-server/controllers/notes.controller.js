@@ -5,7 +5,6 @@ const User = require("../models/user.model");
 
 notesRouter.post("/", async (req, res) => {
   const body = req.body;
-  console.log(req.token);
   const decodedToken = jwt.verify(req.token, process.env.SECRET);
   if (!req.token || !decodedToken.id) {
     return res.status(401).json({ error: "token missing or invalid" });

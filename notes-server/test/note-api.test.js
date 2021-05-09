@@ -5,12 +5,18 @@ const app = require("../app");
 
 const api = supertest(app);
 const Note = require("../models/note.model");
+const User = require("../models/user.model");
 
 beforeEach(async () => {
   await Note.deleteMany({});
+  await User.deleteMany({});
+
   const noteObjects = helper.initialNotes.map((note) => new Note(note));
   const promiseArray = noteObjects.map((note) => note.save());
   await Promise.all(promiseArray);
+
+  const { username, name, password } = helper.initialUsers[0];
+  await api.post("/api/users").send({ username, name, password });
 });
 
 describe("when there is initially some notes saved", () => {
@@ -48,14 +54,11 @@ describe("viewing a specific note", () => {
 
   test("fails with statuscode 404 if note does not exist", async () => {
     const validNonexistingId = await helper.nonExistingId();
-    console.log(validNonexistingId);
-
     await api.get(`/api/notes/${validNonexistingId}`).expect(404);
   });
 
   test("fails with statuscode 400 id is invalid", async () => {
     const invalidId = "5a3d5da59070081a82a3445";
-
     await api.get(`/api/notes/${invalidId}`).expect(400);
   });
 });
@@ -66,9 +69,16 @@ describe("addition of a new note", () => {
       content: "async/await simplifies making async calls",
       important: true,
     };
+    const { username, password } = helper.initialUsers[0];
+
+    const result = await api
+      .post("/api/login")
+      .send({ username, password })
+      .expect(200);
 
     await api
       .post("/api/notes")
+      .set("Authorization", `Bearer ${result.body.token}`)
       .send(newNote)
       .expect(200)
       .expect("Content-Type", /application\/json/);
@@ -80,9 +90,39 @@ describe("addition of a new note", () => {
     expect(contents).toContain(newNote.content);
   });
 
-  test("fails with status code 400 if data invalid", async () => {
+  test("fails without authorization header", async () => {
+    const newNote = {
+      content: "correct note but withour auth",
+      important: true,
+    };
+
+    await api
+      .post("/api/notes")
+      .send(newNote)
+      .expect(401)
+      .expect("Content-Type", /application\/json/);
+
+    const notesAtEnd = await helper.notesInDb();
+    expect(notesAtEnd).toHaveLength(helper.initialNotes.length);
+
+    const contents = notesAtEnd.map((n) => n.content);
+    expect(contents).not.toContain(newNote.content);
+  });
+
+  test("fails with status code 400 if data invalid and auth", async () => {
     const newNote = { important: true };
-    await api.post("/api/notes").send(newNote).expect(400);
+    const { username, password } = helper.initialUsers[0];
+
+    const result = await api
+      .post("/api/login")
+      .send({ username, password })
+      .expect(200);
+
+    await api
+      .post("/api/notes")
+      .set("Authorization", `Bearer ${result.body.token}`)
+      .send(newNote)
+      .expect(400);
 
     const notesAtEnd = await helper.notesInDb();
     expect(notesAtEnd).toHaveLength(helper.initialNotes.length);

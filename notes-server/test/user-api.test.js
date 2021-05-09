@@ -20,15 +20,9 @@ describe("when there is initially one user in db", () => {
   test("creation succeeds with a fresh username", async () => {
     const usersAtStart = await helper.usersInDb();
 
-    const newUser = {
-      username: "testuser",
-      name: "User Test",
-      password: "p4$$w0rd",
-    };
-
     await api
       .post("/api/users")
-      .send(newUser)
+      .send(helper.initialUsers[0])
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
@@ -36,7 +30,7 @@ describe("when there is initially one user in db", () => {
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
 
     const usernames = usersAtEnd.map((u) => u.username);
-    expect(usernames).toContain(newUser.username);
+    expect(usernames).toContain(helper.initialUsers[0].username);
   });
 
   test("creation fails with proper statuscode and message if username already taken", async () => {

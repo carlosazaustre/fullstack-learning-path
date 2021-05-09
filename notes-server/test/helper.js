@@ -14,6 +14,14 @@ const initialNotes = [
   },
 ];
 
+const initialUsers = [
+  {
+    username: "test",
+    name: "User Test",
+    password: "testpassword",
+  },
+];
+
 const nonExistingId = async () => {
   const note = new Note({ content: "willremovethissoon", date: new Date() });
   await note.save();
@@ -32,4 +40,10 @@ const usersInDb = async () => {
   return users.map((u) => u.toJSON());
 };
 
-module.exports = { initialNotes, nonExistingId, notesInDb, usersInDb };
+module.exports = {
+  initialNotes,
+  initialUsers,
+  nonExistingId,
+  notesInDb,
+  usersInDb,
+};

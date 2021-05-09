@@ -1,13 +1,15 @@
+const logger = require("./logger");
+
 const requestLogger = (req, res, next) => {
-  console.log("Method: ", req?.method);
-  console.log("Path: ", req?.path);
-  console.log("Body: ", req?.body);
-  console.log("----");
+  logger.info("Method: ", req?.method);
+  logger.info("Path: ", req?.path);
+  logger.info("Body: ", req?.body);
+  logger.info("----");
   next();
 };
 
 const errorHandler = (error, req, res, next) => {
-  console.log(error);
+  logger.info(error);
 
   if (error.name === "CastError") {
     return res.status(400).send({ error: "malformatted id" });

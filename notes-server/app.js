@@ -8,6 +8,7 @@ const logger = require("./utils/logger");
 const middleware = require("./utils/middleware");
 const notesRouter = require("./controllers/notes.controller");
 const usersRouter = require("./controllers/users.controller");
+const loginRouter = require("./controllers/login.controller");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(express.static("build"));
 app.use(express.json());
 app.use(middleware.requestLogger);
 
+app.use("/api/login", loginRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/notes", notesRouter);
 

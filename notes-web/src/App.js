@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import noteService from "./services/noteService";
 import loginService from "./services/loginService";
 import { Togglable } from "./components/Togglable";
@@ -13,6 +13,8 @@ export const App = () => {
   const [showAll, setShowAll] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [user, setUser] = useState(null);
+
+  const noteFormRef = useRef();
 
   useEffect(() => {
     noteService.getAll().then((initialNotes) => {
@@ -55,6 +57,8 @@ export const App = () => {
   };
 
   const handleCreateNote = async (noteObject) => {
+    noteFormRef.current.toggleVisibility();
+
     try {
       const returnedNote = await noteService.create(noteObject);
       setNotes([...notes, returnedNote]);
@@ -93,7 +97,7 @@ export const App = () => {
             <button onClick={handleLogout}>Logout</button>
           </p>
 
-          <Togglable buttonLabel="new note">
+          <Togglable buttonLabel="new note" ref={noteFormRef}>
             <AddNoteForm createNote={handleCreateNote} />
           </Togglable>
         </div>

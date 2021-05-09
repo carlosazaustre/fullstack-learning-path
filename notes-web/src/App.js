@@ -54,7 +54,7 @@ export const App = () => {
     setUser(null);
   };
 
-  const handleAddNote = async (noteObject) => {
+  const handleCreateNote = async (noteObject) => {
     try {
       const returnedNote = await noteService.create(noteObject);
       setNotes([...notes, returnedNote]);
@@ -94,7 +94,7 @@ export const App = () => {
           </p>
 
           <Togglable buttonLabel="new note">
-            <AddNoteForm onAddNote={handleAddNote} />
+            <AddNoteForm createNote={handleCreateNote} />
           </Togglable>
         </div>
       )}

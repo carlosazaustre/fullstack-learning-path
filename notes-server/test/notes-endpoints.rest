@@ -12,15 +12,16 @@ DELETE http://localhost:3001/api/notes/1
 ###
 POST http://localhost:3001/api/notes/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNhemF1c3RyZSIsImlkIjoiNjA5N2NkOTIxZmJlMTFmM2VkOGM1YjU1IiwiaWF0IjoxNjIwNTY4OTQ2fQ.gU2ZvMgLW1Sey7zgCI3S2FGho4geYqIocqoP9vvXhbw
 
 {
-  "content": "note example by user",
-  "userId": "6097cd921fbe11f3ed8c5b55"
+  "content": "note example 3 by user with JWT"
 }
 
 ###
 POST http://localhost:3001/api/notes/
 Content-Type: application/json
+Authorization:
 
 {}
 

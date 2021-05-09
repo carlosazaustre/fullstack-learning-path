@@ -19,6 +19,15 @@ export const App = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("notes-app-user");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      noteService.setToken(user.token);
+    }
+  }, []);
+
   const handleError = (error) => {
     setErrorMessage("Wrong credentials");
     setTimeout(() => {
@@ -30,11 +39,18 @@ export const App = () => {
     try {
       const user = await loginService.login({ username, password });
 
+      window.localStorage.setItem("notes-app-user", JSON.stringify(user));
+
       noteService.setToken(user.token);
       setUser(user);
     } catch (error) {
       handleError(error);
     }
+  };
+
+  const handleLogout = () => {
+    window.localStorage.removeItem("notes-app-user");
+    setUser(null);
   };
 
   const handleAddNote = async (noteObject) => {
@@ -69,7 +85,10 @@ export const App = () => {
         <LoginForm onLogin={handleLogin} onError={handleError} />
       ) : (
         <div>
-          <p>{user.name} logged-in</p>
+          <p>
+            {user.name} logged-in
+            <button onClick={handleLogout}>Logout</button>
+          </p>
           <AddNoteForm onAddNote={handleAddNote} />
         </div>
       )}

@@ -1,7 +1,7 @@
 GET http://localhost:3001/api/notes/
 
 ###
-GET http://localhost:3001/api/notes/6096cf25019ed2c9273342a7
+GET http://localhost:3001/api/notes/60979008735726e1436dbc8c
 
 ###
 GET http://localhost:3001/api/notes/10
@@ -14,7 +14,7 @@ POST http://localhost:3001/api/notes/
 Content-Type: application/json
 
 {
-  "content": "lol"
+  "content": "example"
 }
 
 ###

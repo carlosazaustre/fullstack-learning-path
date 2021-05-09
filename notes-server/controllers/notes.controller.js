@@ -1,16 +1,22 @@
 const notesRouter = require("express").Router();
 const Note = require("../models/note.model");
+const User = require("../models/user.model");
 
 notesRouter.post("/", async (req, res) => {
   const body = req.body;
+  const user = await User.findById(body.userId);
 
   const note = new Note({
     content: body.content,
     important: body.important || false,
     date: new Date(),
+    user: user._id,
   });
 
   const savedNote = await note.save();
+  user.notes = [...user.notes, savedNote._id];
+  await user.save();
+
   res.json(savedNote.toJSON());
 });
 

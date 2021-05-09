@@ -14,7 +14,8 @@ POST http://localhost:3001/api/notes/
 Content-Type: application/json
 
 {
-  "content": "example"
+  "content": "note example by user",
+  "userId": "6097cd921fbe11f3ed8c5b55"
 }
 
 ###

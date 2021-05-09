@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export const Note = ({ note, toggleImportance }) => {
   const label = note.important ? "make not important" : "make important";
@@ -8,4 +9,12 @@ export const Note = ({ note, toggleImportance }) => {
       <button onClick={toggleImportance}>{label}</button>
     </li>
   );
+};
+
+Note.propTypes = {
+  note: PropTypes.shape({
+    important: PropTypes.bool.isRequired,
+    content: PropTypes.string.isRequired,
+  }),
+  toggleImportance: PropTypes.func.isRequired,
 };

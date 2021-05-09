@@ -32,7 +32,7 @@ export const App = () => {
   }, []);
 
   const handleError = (error) => {
-    setErrorMessage("Wrong credentials");
+    setErrorMessage(error);
     setTimeout(() => {
       setErrorMessage(null);
     }, 5000);
@@ -46,8 +46,8 @@ export const App = () => {
 
       noteService.setToken(user.token);
       setUser(user);
-    } catch (error) {
-      handleError(error);
+    } catch (_error) {
+      handleError("Wrong credentials");
     }
   };
 

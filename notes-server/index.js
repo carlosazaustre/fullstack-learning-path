@@ -1,4 +1,7 @@
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const http = require("http");
 const express = require("express");
 const cors = require("cors");
@@ -7,18 +10,10 @@ const mongoose = require("mongoose");
 const Note = require("./models/note");
 
 const PORT = process.env.PORT;
-const URL = process.env.MONGODB_URI;
 const app = express();
 const server = http.createServer(app);
 
-mongoose.connect(URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: true,
-  useCreateIndex: true,
-});
-
-const requestLogger = (req, res, next) => {
+const logger = (req, res, next) => {
   console.log("Method: ", req?.method);
   console.log("Path: ", req?.path);
   console.log("Body: ", req?.body);
@@ -27,20 +22,20 @@ const requestLogger = (req, res, next) => {
 };
 
 app.use(cors());
-app.use(express.json());
 app.use(express.static("build"));
-app.use(requestLogger);
+app.use(express.json());
+app.use(logger);
 
 app.get("/api/notes", (req, res, next) => {
   Note.find({})
-    .then((notes) => res.json(notes))
+    .then((notes) => res.json(notes.map((note) => note.toJSON())))
     .catch((error) => next(error));
 });
 
 app.get("/api/notes/:id", (req, res, next) => {
   Note.findById(req.params.id)
     .then((note) => {
-      if (note) res.json(note);
+      if (note) res.json(note.toJSON());
       else res.status(404).end();
     })
     .catch((error) => next(error));
@@ -48,10 +43,6 @@ app.get("/api/notes/:id", (req, res, next) => {
 
 app.post("/api/notes", (req, res, next) => {
   const body = req.body;
-
-  if (!body.content || body.content === undefined) {
-    return res.status(400).json({ error: "content missing" });
-  }
 
   const note = new Note({
     content: body.content,
@@ -61,7 +52,7 @@ app.post("/api/notes", (req, res, next) => {
 
   note
     .save()
-    .then((savedNote) => res.json(savedNote))
+    .then((savedNote) => res.json(savedNote.toJSON()))
     .catch((error) => next(error));
 });
 
@@ -74,7 +65,7 @@ app.put("/api/notes/:id", (req, res, next) => {
   };
 
   Note.findByIdAndUpdate(req.params.id, note, { new: true })
-    .then((updatedNote) => res.json(updatedNote))
+    .then((updatedNote) => res.json(updatedNote.toJSON()))
     .catch((error) => next(error));
 });
 
@@ -97,6 +88,10 @@ const errorHandler = (error, req, res, next) => {
 
   if (error.name === "CastError") {
     return res.status(400).send({ error: "malformatted id" });
+  }
+
+  if (error.name === "ValidationError") {
+    return res.status(400).json({ error: error.message });
   }
 
   next(error);

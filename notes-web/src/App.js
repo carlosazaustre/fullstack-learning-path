@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import noteService from "./services/notes";
 import loginService from "./services/login";
+import { AddNoteForm } from "./components/AddNoteForm";
+import { LoginForm } from "./components/LoginForm";
 import { Note } from "./components/Note";
 import { Notification } from "./components/Notification";
 import { Footer } from "./components/Footer";
 
 export const App = () => {
   const [notes, setNotes] = useState([]);
-  const [newNote, setNewNote] = useState("a new note...");
   const [showAll, setShowAll] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -20,89 +19,44 @@ export const App = () => {
     });
   }, []);
 
-  const notesToShow = showAll ? notes : notes.filter((note) => note.important);
-
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value);
+  const handleError = (error) => {
+    setErrorMessage("Wrong credentials");
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 5000);
   };
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  const handleLogin = async ({ username, password }) => {
     try {
       const user = await loginService.login({ username, password });
       setUser(user);
-      setUsername("");
-      setPassword("");
     } catch (error) {
-      setErrorMessage("Wrong credentials");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      handleError(error);
     }
   };
 
-  const toggleImportanceOf = (id) => {
+  const handleAddNote = async (noteObject) => {
+    try {
+      const returnedNote = await noteService.create(noteObject);
+      setNotes([...notes, returnedNote]);
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const toggleImportanceOf = async (id) => {
     const note = notes.find((n) => n.id === id);
     const changedNote = { ...note, important: !note.important };
 
-    noteService
-      .update(id, changedNote)
-      .then((returnedNote) => {
-        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
-      })
-      .catch((error) => {
-        setErrorMessage(
-          `Note '${note.content}' was already deleted from server`
-        );
-        setTimeout(() => setErrorMessage(null), 5000);
-      });
+    try {
+      const returnedNote = await noteService.update(id, changedNote);
+      setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
+    } catch (error) {
+      handleError(`Note '${note.content}' was already deleted from server`);
+    }
   };
 
-  const addNote = (event) => {
-    event.preventDefault();
-    const noteObject = {
-      content: newNote,
-      date: new Date().toISOString(),
-      important: Math.random() > 0.5,
-      id: notes.length + 1,
-    };
-
-    noteService.create(noteObject).then((returnedNote) => {
-      setNotes([...notes, returnedNote]);
-      setNewNote("");
-    });
-  };
-
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">Login</button>
-    </form>
-  );
-
-  const noteForm = () => (
-    <form onSubmit={addNote}>
-      <input type="text" value={newNote} onChange={handleNoteChange} />
-      <button type="submit">Save</button>
-    </form>
-  );
+  const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
   return (
     <div>
@@ -110,11 +64,11 @@ export const App = () => {
       <Notification message={errorMessage} />
 
       {user === null ? (
-        loginForm()
+        <LoginForm onLogin={handleLogin} onError={handleError} />
       ) : (
         <div>
           <p>{user.name} logged-in</p>
-          {noteForm()}
+          <AddNoteForm onAddNote={handleAddNote} />
         </div>
       )}
 

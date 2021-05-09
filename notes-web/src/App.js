@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import noteService from "./services/notes";
-import loginService from "./services/login";
+import noteService from "./services/noteService";
+import loginService from "./services/loginService";
 import { AddNoteForm } from "./components/AddNoteForm";
 import { LoginForm } from "./components/LoginForm";
 import { Note } from "./components/Note";
@@ -29,6 +29,8 @@ export const App = () => {
   const handleLogin = async ({ username, password }) => {
     try {
       const user = await loginService.login({ username, password });
+
+      noteService.setToken(user.token);
       setUser(user);
     } catch (error) {
       handleError(error);

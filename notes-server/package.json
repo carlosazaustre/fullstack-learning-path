@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
     "build:ui": "rm -rf build && cd ../notes-web && npm run build --prod && cp -r build ../notes-server/",
     "deploy": "git push -u heroku main",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
@@ -21,6 +22,7 @@
     "mongoose": "^5.12.7"
   },
   "devDependencies": {
+    "eslint": "^7.26.0",
     "nodemon": "^2.0.7"
   }
 }

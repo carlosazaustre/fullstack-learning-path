@@ -5,8 +5,6 @@ if (process.env.NODE_ENV !== "production") {
 const http = require("http");
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
-
 const Note = require("./models/note");
 
 const PORT = process.env.PORT;
@@ -71,7 +69,7 @@ app.put("/api/notes/:id", (req, res, next) => {
 
 app.delete("/api/notes/:id", (req, res, next) => {
   Note.findByIdAndRemove(req.params.id)
-    .then((result) => {
+    .then(() => {
       res.status(204).end();
     })
     .catch((error) => next(error));

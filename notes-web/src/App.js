@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import noteService from "./services/noteService";
 import loginService from "./services/loginService";
+import { Togglable } from "./components/Togglable";
 import { AddNoteForm } from "./components/AddNoteForm";
 import { LoginForm } from "./components/LoginForm";
 import { Note } from "./components/Note";
@@ -82,14 +83,19 @@ export const App = () => {
       <Notification message={errorMessage} />
 
       {user === null ? (
-        <LoginForm onLogin={handleLogin} onError={handleError} />
+        <Togglable buttonLabel="log in">
+          <LoginForm onLogin={handleLogin} onError={handleError} />
+        </Togglable>
       ) : (
         <div>
           <p>
             {user.name} logged-in
             <button onClick={handleLogout}>Logout</button>
           </p>
-          <AddNoteForm onAddNote={handleAddNote} />
+
+          <Togglable buttonLabel="new note">
+            <AddNoteForm onAddNote={handleAddNote} />
+          </Togglable>
         </div>
       )}
 

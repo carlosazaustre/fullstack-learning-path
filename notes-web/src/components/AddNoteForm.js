@@ -20,9 +20,13 @@ export const AddNoteForm = ({ onAddNote }) => {
   };
 
   return (
-    <form onSubmit={handleOnSubmit}>
-      <input type="text" value={newNote} onChange={handleNoteChange} />
-      <button type="submit">Save</button>
-    </form>
+    <div>
+      <h2>Create a new note</h2>
+
+      <form onSubmit={handleOnSubmit}>
+        <input type="text" value={newNote} onChange={handleNoteChange} />
+        <button type="submit">Save</button>
+      </form>
+    </div>
   );
 };

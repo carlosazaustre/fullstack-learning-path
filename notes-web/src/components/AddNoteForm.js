@@ -23,8 +23,15 @@ export const AddNoteForm = ({ createNote }) => {
       <h2>Create a new note</h2>
 
       <form onSubmit={handleOnSubmit}>
-        <input type="text" value={newNote} onChange={handleChange} />
-        <button type="submit">Save</button>
+        <input
+          id="new-note"
+          type="text"
+          value={newNote}
+          onChange={handleChange}
+        />
+        <button id="new-note-button" type="submit">
+          Save
+        </button>
       </form>
     </div>
   );

@@ -11,6 +11,7 @@
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+    "start:test": "cross-env NODE_ENV=test node index.js",
     "lint": "eslint ."
   },
   "author": "Carlos Azaustre <cazaustre@gmail.com> (https://carlosazaustre.es/)",

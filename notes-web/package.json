@@ -17,7 +17,8 @@
     "test": "react-scripts test",
     "coverage": "CI=true npm test -- --coverage",
     "eject": "react-scripts eject",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "cypress:open": "cypress open"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {
@@ -41,6 +42,8 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
+    "cypress": "^7.2.0",
+    "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-jest": "^24.3.6"
   }
 }

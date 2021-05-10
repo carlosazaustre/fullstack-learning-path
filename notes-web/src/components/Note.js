@@ -16,5 +16,5 @@ Note.propTypes = {
     important: PropTypes.bool.isRequired,
     content: PropTypes.string.isRequired,
   }),
-  toggleImportance: PropTypes.func,
+  toggleImportance: PropTypes.func.isRequired,
 };

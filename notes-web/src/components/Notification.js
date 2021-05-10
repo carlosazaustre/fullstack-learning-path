@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 export const Notification = ({ message }) => {
-  if (message === null) {
+  if (message === null || message === undefined) {
     return null;
   }
 

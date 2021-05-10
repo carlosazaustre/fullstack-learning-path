@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  style={
+    Object {
+      "color": "green",
+      "fontSize": 16,
+      "fontStyle": "italic",
+    }
+  }
+>
+  <br />
+  <em>
+    Note app, (c) 2021 - Department of Computer Science, University of Helsinki
+  </em>
+</div>
+`;
